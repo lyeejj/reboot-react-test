@@ -7,12 +7,26 @@ import { waitTwoSeconds } from "../../utils";
 
 export const __addToDo = createAsyncThunk(
   "__addToDo",
-  async (payload, thunkAPI) => {}
+  async (payload, thunkAPI) => {
+    try {
+      await waitTwoSeconds();
+      return payload;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
 );
 
 export const __deleteTodo = createAsyncThunk(
   "__deleteToDo",
-  async (payload, thunkAPI) => {}
+  async (payload, thunkAPI) => {
+    try {
+      await waitTwoSeconds();
+      return payload;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
 );
 
 const initialState = {
@@ -22,9 +36,15 @@ const initialState = {
 const todosSlice = createSlice({
   name: "todos",
   initialState,
-  reducers: {
-    addTodo: (state, action) => {},
-    deleteTodo: (state, action) => {},
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(__addToDo.fulfilled, (state, action) => {
+        state.list = [...state.list, action.payload];
+      })
+      .addCase(__deleteTodo.fulfilled, (state, action) => {
+        state.list = state.list.filter((item) => item.id !== action.payload);
+      });
   },
 });
 
